@@ -59,7 +59,7 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
                 case 0:
                     tvVideoInfo.setText("duration:" + videoView.getDuration() + "\n");
                     tvVideoInfo.append("currentPosition:" + videoView.getCurrentPosition() + "\n");
-                    updateTextViewWithTimeFormat(tvPlayTime, videoView.getCurrentPosition()/1000);
+                    updateTextViewWithTimeFormat(tvPlayTime, videoView.getCurrentPosition() / 1000);
                     uiHandler.sendEmptyMessageDelayed(0, 200);
                     break;
             }
@@ -100,8 +100,10 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
             case R.id.btnNext:
                 break;
             case R.id.btnQuickBack:
+                videoView.seekTo(videoView.getCurrentPosition() - 1000 * 10);
                 break;
             case R.id.btnQuickForword:
+                videoView.seekTo(videoView.getCurrentPosition() + 1000 * 10);
                 break;
             case R.id.btnGetCurrent:
                 tvVideoInfo.append("当前进度：" + videoView.getCurrentPosition() + "\n");
