@@ -3,16 +3,23 @@ package com.fanyafeng.testijkplayer.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.DragEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.fanyafeng.testijkplayer.R;
 import com.fanyafeng.testijkplayer.BaseActivity;
 import com.fanyafeng.testijkplayer.fragment.TracksFragment;
+import com.fanyafeng.testijkplayer.util.FitScreenUtil;
+import com.fanyafeng.testijkplayer.util.MyUtils;
 import com.fanyafeng.testijkplayer.widget.media.AndroidMediaController;
 import com.fanyafeng.testijkplayer.widget.media.IjkVideoView;
 
@@ -27,6 +34,16 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
     private TextView tvVideoInfo;
     private TextView tvPlayTime;
 
+    private TextView tvCurrentTime;
+    private TextView tvTotalTime;
+    private SeekBar seekBarVideo;
+
+    private SeekBar seekBarSound;
+    private SeekBar seekBarLight;
+
+    private int screenBrightness;
+    private int screenMode;
+
     private AndroidMediaController mediaController;
 
     @Override
@@ -35,6 +52,12 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
         setContentView(R.layout.activity_player);
         title = getString(R.string.title_activity_player);
         mediaController = new AndroidMediaController(this, false);
+        try {
+            screenBrightness = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+            screenMode = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
 
         initView();
         initData();
@@ -49,6 +72,13 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
         tvVideoInfo = (TextView) findViewById(R.id.tvVideoInfo);
         videoView = (IjkVideoView) findViewById(R.id.videoView);
         tvPlayTime = (TextView) findViewById(R.id.tvPlayTime);
+
+        tvCurrentTime = (TextView) findViewById(R.id.tvCurrentTime);
+        tvTotalTime = (TextView) findViewById(R.id.tvTotalTime);
+        seekBarVideo = (SeekBar) findViewById(R.id.seekBarVideo);
+
+        seekBarSound = (SeekBar) findViewById(R.id.seekBarSound);
+        seekBarLight = (SeekBar) findViewById(R.id.seekBarLight);
     }
 
     Handler uiHandler = new Handler() {
@@ -57,6 +87,12 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
+                    if (videoView.getDuration() > 0) {
+                        seekBarVideo.setMax(videoView.getDuration());
+                        seekBarVideo.setProgress(videoView.getCurrentPosition());
+                    }
+                    updateTextViewWithTimeFormat(tvCurrentTime, videoView.getCurrentPosition() / 1000);
+                    updateTextViewWithTimeFormat(tvTotalTime, videoView.getDuration() / 1000);
                     tvVideoInfo.setText("duration:" + videoView.getDuration() + "\n");
                     tvVideoInfo.append("currentPosition:" + videoView.getCurrentPosition() + "\n");
                     updateTextViewWithTimeFormat(tvPlayTime, videoView.getCurrentPosition() / 1000);
@@ -68,19 +104,78 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
 
     //初始化数据
     private void initData() {
-        videoView.setMediaController(mediaController);
+//        videoView.setMediaController(mediaController);
         videoView.setVideoPath("http://www.jmzsjy.com/UploadFile/%E5%BE%AE%E8%AF%BE/%E5%9C%B0%E6%96%B9%E9%A3%8E%E5%91%B3%E5%B0%8F%E5%90%83%E2%80%94%E2%80%94%E5%AE%AB%E5%BB%B7%E9%A6%99%E9%85%A5%E7%89%9B%E8%82%89%E9%A5%BC.mp4");
         videoView.start();
+        int screenWidth = MyUtils.getScreenWidth(this);
+        int height = screenWidth / 4 * 3;
+
+        FitScreenUtil.FixScreenXY(videoView, screenWidth, height);
         uiHandler.sendEmptyMessageDelayed(0, 200);
 
         tvVideoInfo.setText("duration:" + videoView.getDuration() + "\n");
         tvVideoInfo.append("currentPosition:" + videoView.getCurrentPosition() + "\n");
-        tvVideoInfo.append("tTextDirection" + videoView.getTextDirection() + "\n");
+
+        seekBarVideo.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int seekPos = seekBar.getProgress();
+                videoView.seekTo(seekPos);
+            }
+        });
+
+        seekBarLight.setMax(255);
+        seekBarLight.setProgress(screenBrightness);
+        if (screenMode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+            setScreenMode(Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+        }
+        seekBarLight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int seekPos = seekBar.getProgress();
+                setScreenBrightness(seekPos);
+            }
+        });
     }
+
+    private void setScreenMode(int value) {
+        Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, value);
+    }
+
+    private void setScreenBrightness(int value) {
+        Window w = getWindow();
+        WindowManager.LayoutParams l = w.getAttributes();
+        l.screenBrightness = value;
+        w.setAttributes(l);
+        Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, value);
+    }
+
 
     @Override
     public void onBackPressed() {
         backPressed = true;
+        setScreenBrightness(screenBrightness);
+        setScreenMode(screenMode);
         super.onBackPressed();
     }
 
@@ -109,7 +204,6 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
                 tvVideoInfo.append("当前进度：" + videoView.getCurrentPosition() + "\n");
                 tvVideoInfo.append("duration:" + videoView.getDuration() + "\n");
                 tvVideoInfo.append("currentPosition:" + videoView.getCurrentPosition() + "\n");
-                tvVideoInfo.append("tTextDirection" + videoView.getTextDirection() + "\n");
                 break;
         }
     }
@@ -147,6 +241,9 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
         }
         videoView.pause();
         IjkMediaPlayer.native_profileEnd();
+
+        setScreenBrightness(screenBrightness);
+        setScreenMode(screenMode);
     }
 
     @Override
