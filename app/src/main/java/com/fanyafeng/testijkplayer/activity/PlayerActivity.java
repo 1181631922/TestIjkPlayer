@@ -1,11 +1,14 @@
 package com.fanyafeng.testijkplayer.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.fanyafeng.testijkplayer.R;
 import com.fanyafeng.testijkplayer.BaseActivity;
@@ -21,6 +24,8 @@ import tv.danmaku.ijk.media.player.misc.ITrackInfo;
 public class PlayerActivity extends BaseActivity implements TracksFragment.ITrackHolder {
     private boolean backPressed;
     private IjkVideoView videoView;
+    private TextView tvVideoInfo;
+    private TextView tvPlayTime;
 
     private AndroidMediaController mediaController;
 
@@ -41,16 +46,36 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
         IjkMediaPlayer.loadLibrariesOnce(null);
         IjkMediaPlayer.native_profileBegin("libijkplayer.so");
 
-
+        tvVideoInfo = (TextView) findViewById(R.id.tvVideoInfo);
         videoView = (IjkVideoView) findViewById(R.id.videoView);
-        videoView.setMediaController(mediaController);
-        videoView.setVideoPath("http://www.jmzsjy.com/UploadFile/%E5%BE%AE%E8%AF%BE/%E5%9C%B0%E6%96%B9%E9%A3%8E%E5%91%B3%E5%B0%8F%E5%90%83%E2%80%94%E2%80%94%E5%AE%AB%E5%BB%B7%E9%A6%99%E9%85%A5%E7%89%9B%E8%82%89%E9%A5%BC.mp4");
-        videoView.start();
+        tvPlayTime = (TextView) findViewById(R.id.tvPlayTime);
     }
+
+    Handler uiHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    tvVideoInfo.setText("duration:" + videoView.getDuration() + "\n");
+                    tvVideoInfo.append("currentPosition:" + videoView.getCurrentPosition() + "\n");
+                    updateTextViewWithTimeFormat(tvPlayTime, videoView.getCurrentPosition()/1000);
+                    uiHandler.sendEmptyMessageDelayed(0, 200);
+                    break;
+            }
+        }
+    };
 
     //初始化数据
     private void initData() {
+        videoView.setMediaController(mediaController);
+        videoView.setVideoPath("http://www.jmzsjy.com/UploadFile/%E5%BE%AE%E8%AF%BE/%E5%9C%B0%E6%96%B9%E9%A3%8E%E5%91%B3%E5%B0%8F%E5%90%83%E2%80%94%E2%80%94%E5%AE%AB%E5%BB%B7%E9%A6%99%E9%85%A5%E7%89%9B%E8%82%89%E9%A5%BC.mp4");
+        videoView.start();
+        uiHandler.sendEmptyMessageDelayed(0, 200);
 
+        tvVideoInfo.setText("duration:" + videoView.getDuration() + "\n");
+        tvVideoInfo.append("currentPosition:" + videoView.getCurrentPosition() + "\n");
+        tvVideoInfo.append("tTextDirection" + videoView.getTextDirection() + "\n");
     }
 
     @Override
@@ -78,12 +103,39 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
                 break;
             case R.id.btnQuickForword:
                 break;
+            case R.id.btnGetCurrent:
+                tvVideoInfo.append("当前进度：" + videoView.getCurrentPosition() + "\n");
+                tvVideoInfo.append("duration:" + videoView.getDuration() + "\n");
+                tvVideoInfo.append("currentPosition:" + videoView.getCurrentPosition() + "\n");
+                tvVideoInfo.append("tTextDirection" + videoView.getTextDirection() + "\n");
+                break;
+        }
+    }
+
+    private void updateTextViewWithTimeFormat(TextView textView, int second) {
+        int hh = second / 3600;
+        int mm = second % 3600 / 60;
+        int ss = second % 60;
+        String stringTemp = null;
+        if (0 != hh) {
+            stringTemp = String.format("%02d:%02d:%02d", hh, mm, ss);
+        } else {
+            stringTemp = String.format("%02d:%02d", mm, ss);
+        }
+        textView.setText(stringTemp);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (videoView.getCurrentPosition() > 0) {
+            videoView.start();
         }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         if (backPressed || videoView.isBackgroundPlayEnabled()) {
             videoView.stopPlayback();
             videoView.release(true);
@@ -91,6 +143,7 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
         } else {
             videoView.stopBackgroundPlay();
         }
+        videoView.pause();
         IjkMediaPlayer.native_profileEnd();
     }
 
