@@ -57,10 +57,20 @@
             </RelativeLayout>
         </RelativeLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="音量调节" />
+
         <SeekBar
             android:id="@+id/seekBarSound"
             android:layout_width="match_parent"
             android:layout_height="40dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="亮度调节" />
 
         <SeekBar
             android:id="@+id/seekBarLight"

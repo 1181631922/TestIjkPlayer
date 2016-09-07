@@ -1,5 +1,8 @@
 package com.fanyafeng.testijkplayer.activity;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -44,6 +47,11 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
     private int screenBrightness;
     private int screenMode;
 
+    private AudioManager audioManager;
+    private AssetManager assetManager;
+    private int soundAudio;
+    private int soundMode;
+
     private AndroidMediaController mediaController;
 
     @Override
@@ -58,6 +66,9 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        soundAudio = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        soundMode = audioManager.getMode();
 
         initView();
         initData();
@@ -156,6 +167,25 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
                 setScreenBrightness(seekPos);
             }
         });
+        seekBarSound.setMax(15);
+        seekBarSound.setProgress(soundAudio);
+        seekBarSound.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                int seekPos = seekBar.getProgress();
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, seekPos, AudioManager.FLAG_PLAY_SOUND);
+            }
+        });
     }
 
     private void setScreenMode(int value) {
@@ -176,6 +206,7 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
         backPressed = true;
         setScreenBrightness(screenBrightness);
         setScreenMode(screenMode);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, soundAudio, AudioManager.FLAG_PLAY_SOUND);
         super.onBackPressed();
     }
 
@@ -244,6 +275,7 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
 
         setScreenBrightness(screenBrightness);
         setScreenMode(screenMode);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, soundAudio, AudioManager.FLAG_PLAY_SOUND);
     }
 
     @Override
