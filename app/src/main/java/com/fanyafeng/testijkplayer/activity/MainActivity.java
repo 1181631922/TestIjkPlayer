@@ -50,6 +50,9 @@ public class MainActivity extends BaseActivity {
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
+            case R.id.btnGesture:
+                startActivity(new Intent(this, GestureActivity.class));
+                break;
             case R.id.btnPlayer:
                 startActivity(new Intent(this, PlayerActivity.class));
                 break;

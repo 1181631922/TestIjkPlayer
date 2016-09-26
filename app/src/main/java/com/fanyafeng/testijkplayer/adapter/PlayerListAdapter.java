@@ -56,16 +56,16 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
         holder.videoView.setVisibility(View.GONE);
         holder.sdvVideo.setVisibility(View.VISIBLE);
 
-//        if (playerListBean.getPlayingCode() == 0) {
-//            holder.videoView.setVisibility(View.GONE);
-//            holder.videoView.release(true);
-//            holder.sdvVideo.setVisibility(View.VISIBLE);
-//        } else {
-//            holder.videoView.setVisibility(View.VISIBLE);
-//            holder.sdvVideo.setVisibility(View.INVISIBLE);
-//            holder.videoView.seekTo(0);
-//            holder.videoView.start();
-//        }
+        if (playerListBean.getPlayingCode() == 0) {
+            holder.videoView.setVisibility(View.GONE);
+            holder.videoView.release(true);
+            holder.sdvVideo.setVisibility(View.VISIBLE);
+        } else {
+            holder.videoView.setVisibility(View.VISIBLE);
+            holder.sdvVideo.setVisibility(View.INVISIBLE);
+            holder.videoView.seekTo(0);
+            holder.videoView.start();
+        }
     }
 
     @Override

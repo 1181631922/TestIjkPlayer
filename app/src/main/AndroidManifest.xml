@@ -40,7 +40,11 @@
             android:name=".activity.VideoListActivity"
             android:label="@string/title_activity_video_list"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.GestureActivity"
+            android:label="@string/title_activity_gesture"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

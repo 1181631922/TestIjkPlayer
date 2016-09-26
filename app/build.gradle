@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         applicationId "com.fanyafeng.testijkplayer"
@@ -28,10 +28,10 @@ dependencies {
     compile 'com.android.support:support-annotations:24.0.0'
 
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.6.2'
-//    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.6.2'
-//    compile 'tv.danmaku.ijk.media:ijkplayer-armv5:0.6.2'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.6.2'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv5:0.6.2'
 //        compile 'tv.danmaku.ijk.media:ijkplayer-arm64:0.6.2'
-//    compile 'tv.danmaku.ijk.media:ijkplayer-x86:0.6.2'
+    compile 'tv.danmaku.ijk.media:ijkplayer-x86:0.6.2'
 //        compile 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.6.2'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.6.2'
     compile 'com.facebook.fresco:fresco:0.13.0'

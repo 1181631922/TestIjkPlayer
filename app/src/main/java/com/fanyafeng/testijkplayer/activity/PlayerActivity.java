@@ -116,7 +116,9 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
     //初始化数据
     private void initData() {
 //        videoView.setMediaController(mediaController);
-        videoView.setVideoPath("http://www.jmzsjy.com/UploadFile/%E5%BE%AE%E8%AF%BE/%E5%9C%B0%E6%96%B9%E9%A3%8E%E5%91%B3%E5%B0%8F%E5%90%83%E2%80%94%E2%80%94%E5%AE%AB%E5%BB%B7%E9%A6%99%E9%85%A5%E7%89%9B%E8%82%89%E9%A5%BC.mp4");
+//        videoView.setVideoPath("http://www.jmzsjy.com/UploadFile/%E5%BE%AE%E8%AF%BE/%E5%9C%B0%E6%96%B9%E9%A3%8E%E5%91%B3%E5%B0%8F%E5%90%83%E2%80%94%E2%80%94%E5%AE%AB%E5%BB%B7%E9%A6%99%E9%85%A5%E7%89%9B%E8%82%89%E9%A5%BC.mp4");
+
+        videoView.setVideoPath("http://la.sdiread.cn/o_1as1jp3qimkhhuo1o54sve1nlt9.mp4");
         videoView.start();
         int screenWidth = MyUtils.getScreenWidth(this);
         int height = screenWidth / 4 * 3;
