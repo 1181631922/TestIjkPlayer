@@ -62,6 +62,9 @@ public class MainActivity extends BaseActivity {
             case R.id.btnVideoList:
                 startActivity(new Intent(this, VideoListActivity.class));
                 break;
+            case R.id.btnDiffent:
+                startActivity(new Intent(this, DiffentListActivity.class));
+                break;
         }
     }
 

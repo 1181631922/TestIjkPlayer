@@ -67,4 +67,5 @@
     <string name="title_activity_player_list">播放器列表</string>
     <string name="title_activity_video_list">VideoListActivity</string>
     <string name="title_activity_gesture">测试手势</string>
+    <string name="title_activity_diffent_list">不同列表展示</string>
 </resources>
