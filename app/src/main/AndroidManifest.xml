@@ -50,6 +50,11 @@
             android:name=".activity.DiffentListActivity"
             android:label="@string/title_activity_diffent_list"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.VideoGestureActivity"
+            android:label="@string/title_activity_video_gesture"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

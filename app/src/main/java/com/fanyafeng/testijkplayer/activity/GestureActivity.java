@@ -32,6 +32,7 @@ public class GestureActivity extends BaseActivity implements GestureDetector.OnG
     private LinearLayout layoutGesture;
 
     private int screenWidth;
+    private int screenHeight;
 
     private int screenBrightness;
     private int screenMode;
@@ -56,6 +57,7 @@ public class GestureActivity extends BaseActivity implements GestureDetector.OnG
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         screenWidth = MyUtils.getScreenWidth(this);
+        screenHeight = MyUtils.getScreenHeight(this);
 
         mediaController = new AndroidMediaController(this, false);
         try {
@@ -113,22 +115,29 @@ public class GestureActivity extends BaseActivity implements GestureDetector.OnG
 //        Log.d("gesture", "distanceX:" + distanceX + "distanceY:" + distanceY);
 //        Log.d("gesture", "屏幕宽度：" + screenWidth);
 
+        double oneBrightPoint = 255 / (double) screenHeight;
+//        Log.d("gesture", "屏幕亮度改变：" + oneBrightPoint);
         //屏幕一分为二
         //左侧控制亮度
         if (e1.getX() < screenWidth >> 1) {
 //            Log.d("gesture", "用户触摸到屏幕左侧,上下互动可以控制屏幕亮度");
-            Log.d("gesture", "亮度用户手指滑动的距离：" + (e1.getY() - e2.getY()));
+//            Log.d("gesture", "亮度用户手指滑动的距离：" + (e1.getY() - e2.getY()));
             int tempScreenBrightness = 0;
             try {
                 tempScreenBrightness = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
             } catch (Settings.SettingNotFoundException e) {
                 e.printStackTrace();
             }
-            int screenChange = (int) ((e1.getY() - e2.getY()) + tempScreenBrightness);
+            int screenChange = (int) ((e2.getY() - e1.getY()) / 500 + tempScreenBrightness);
             if (screenChange > 0 && screenChange <= 255) {
-                setScreenBrightness(screenChange);
+//                Log.d("gesture", "屏幕亮度改变：" + (screenChange));
+//                setScreenBrightness(screenChange);2是结束手势
             }
-
+//            Log.d("gesture", "屏幕亮度改变：e1:" + e1.getY() + "e2:" + e2.getY());
+            Log.d("gesture", "屏幕亮度改变：e1:" + (int) (oneBrightPoint * e2.getY()));
+            int nowLight = (int) (oneBrightPoint * e2.getY());
+            if (nowLight  >10)
+                setScreenBrightness(nowLight);
         }
 
         //右侧控制声音
@@ -138,7 +147,7 @@ public class GestureActivity extends BaseActivity implements GestureDetector.OnG
             int tempSoundAudio = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             int soundChange = (int) ((e1.getY() - e2.getY()) / 100 + tempSoundAudio);
             if (soundChange >= 0 && soundChange <= 15) {
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, soundChange, AudioManager.FLAG_PLAY_SOUND);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 15 - soundChange, AudioManager.FLAG_PLAY_SOUND);
             }
         }
         return true;

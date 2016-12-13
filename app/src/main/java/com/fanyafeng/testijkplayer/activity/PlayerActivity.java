@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
 import android.view.Window;
@@ -166,6 +167,7 @@ public class PlayerActivity extends BaseActivity implements TracksFragment.ITrac
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 int seekPos = seekBar.getProgress();
+                Log.d("gesture", "屏幕亮度改变seekPos:" + seekPos);
                 setScreenBrightness(seekPos);
             }
         });
