@@ -49,6 +49,11 @@ public class GestureActivity extends BaseActivity implements GestureDetector.OnG
         setContentView(R.layout.activity_gesture);
 //这里默认使用的是toolbar的左上角标题，如果需要使用的标题为中心的采用下方注释的代码，将此注释掉即可
         title = getString(R.string.title_activity_gesture);
+        isShowToolbar = false;
+
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         screenWidth = MyUtils.getScreenWidth(this);
 
@@ -112,7 +117,7 @@ public class GestureActivity extends BaseActivity implements GestureDetector.OnG
         //左侧控制亮度
         if (e1.getX() < screenWidth >> 1) {
 //            Log.d("gesture", "用户触摸到屏幕左侧,上下互动可以控制屏幕亮度");
-//            Log.d("gesture", "亮度用户手指滑动的距离：" + (e1.getY() - e2.getY()));
+            Log.d("gesture", "亮度用户手指滑动的距离：" + (e1.getY() - e2.getY()));
             int tempScreenBrightness = 0;
             try {
                 tempScreenBrightness = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
@@ -129,7 +134,7 @@ public class GestureActivity extends BaseActivity implements GestureDetector.OnG
         //右侧控制声音
         if (e1.getX() > screenWidth >> 1) {
 //            Log.d("gesture", "用户触摸到屏幕右侧,上下滑动可以控制屏幕声音");
-//            Log.d("gesture", "声音用户手指滑动的距离：" + (e1.getY() - e2.getY()));
+            Log.d("gesture", "声音用户手指滑动的距离：" + (e1.getY() - e2.getY()));
             int tempSoundAudio = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             int soundChange = (int) ((e1.getY() - e2.getY()) / 100 + tempSoundAudio);
             if (soundChange >= 0 && soundChange <= 15) {

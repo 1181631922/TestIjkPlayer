@@ -44,12 +44,13 @@
         <activity
             android:name=".activity.GestureActivity"
             android:label="@string/title_activity_gesture"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.DiffentListActivity"
             android:label="@string/title_activity_diffent_list"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
